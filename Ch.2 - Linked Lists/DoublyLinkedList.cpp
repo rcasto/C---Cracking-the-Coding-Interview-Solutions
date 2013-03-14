@@ -35,7 +35,7 @@ public:
 		return true;
 	}
 
-	bool add(T *data) {
+	bool add(T data[]) {
 		while (*data) {
 			add(*data);
 			data++;
@@ -142,13 +142,13 @@ int main(int argc, char *argv[]) {
 	//populate list 1
 	list1.add("testing");
 	list1.add("microsoft");
-	list1.add("shit");
+	list1.add("herp");
 	//populate list 2
 	list2.add("stuff");
 	list2.add("math");
 	list2.add("computer");
 	//populate list 3
-	list3.add("weed");
+	list3.add("blah");
 	list3.add("iphone");
 	list3.add("google");
 	//populate list 4
