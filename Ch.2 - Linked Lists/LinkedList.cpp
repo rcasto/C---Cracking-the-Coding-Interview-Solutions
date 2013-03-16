@@ -266,6 +266,51 @@ LinkedListNode<int> *findLoopStart(LinkedListNode<int> *list) {
 	return fast;
 }
 
+/*
+	Problem 7:
+	Implement a method to find out if a linked list is a palindrome
+
+	My algorithm:
+	-find midpoint of linked list
+	-compare data from two pointers until middle pointer reaches the end of the linked list
+
+	Uses helper method which finds the middle node of the linked list
+
+	Space complexity: O(1)
+	Time complexity: O(n)
+*/
+LinkedListNode<int> *findMiddle(LinkedListNode<int> *list) {
+	if (!list) {
+		return 0;
+	}
+	LinkedListNode<int> *fast = list, *slow = list;
+	while (fast) {
+		fast = fast->next;
+		if (fast) {
+			fast = fast->next;
+			slow = slow->next;
+		}
+	}
+	return slow;
+}
+
+bool isPalindrome(LinkedListNode<int> *list) {
+	if (!list) {
+		return false;
+	}
+	LinkedListNode<int> *left = list, *right = findMiddle(list);
+	right = right->next;
+	while (right) {
+		if (left->data != right->data) {
+			return false;
+		}
+		left = left->next;
+		right = right->next;
+	}
+	return true;
+}
+
+
 /* Debugging/Testing */
 int main(int argc, char *argv[]) {
 	// LinkedListNode<int> *list = new LinkedListNode<int>(3);
@@ -294,6 +339,8 @@ int main(int argc, char *argv[]) {
 	// num1->printList();
 	// num2->printList();
 	// add(num1, num2)->printList();
+
+	/*
 	LinkedListNode<int> *circle = new LinkedListNode<int>(1), *loopStart, *loopEnd;
 	circle->next = new LinkedListNode<int>(2);
 	circle->next->next = new LinkedListNode<int>(3);
@@ -305,5 +352,15 @@ int main(int argc, char *argv[]) {
 	loopEnd->next = loopStart;
 	LinkedListNode<int> *start = findLoopStart(circle);
 	std::cout << start->data << std::endl;
+	*/
+
+	LinkedListNode<int> *list = new LinkedListNode<int>(1);
+	list->next = new LinkedListNode<int>(2);
+	list->next->next = new LinkedListNode<int>(1);
+	list->printList();
+	std::cout << isPalindrome(list) << std::endl;
+	list->next->next->next = new LinkedListNode<int>(4);
+	list->printList();
+	std::cout << isPalindrome(list) << std::endl;
 	return 0;
 }
