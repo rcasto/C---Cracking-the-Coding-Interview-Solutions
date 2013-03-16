@@ -237,19 +237,22 @@ LinkedListNode<int> *numToList(std::string num) {
 /*
 	Problem 6:
 	Find the beginning of the loop in a corrupt linked list, a linked list that has a circular portion
+
+	Note: null is returned if list does not have a loop within it
 */
 LinkedListNode<int> *findLoopStart(LinkedListNode<int> *list) {
 	if (!list) {
 		return 0;
 	}
-	//When the slow runner reaches the beginning of the loop in k steps, fast runner will have gone 2k steps
-	//fast runner is thus k steps into the loop
 	LinkedListNode<int> *slow = list, *fast = list;
-	while (fast && slow != fast) {
+	while (fast) {
 		slow = slow->next;
 		fast = fast->next;
 		if (fast) {
 			fast = fast->next;
+		}
+		if (slow == fast) {
+			break;
 		}
 	}
 	if (!fast) {
@@ -258,7 +261,7 @@ LinkedListNode<int> *findLoopStart(LinkedListNode<int> *list) {
 	slow = list;
 	while (slow != fast) {
 		slow = slow->next;
-		fast = fast->next->next;
+		fast = fast->next;
 	}
 	return fast;
 }
@@ -291,15 +294,16 @@ int main(int argc, char *argv[]) {
 	// num1->printList();
 	// num2->printList();
 	// add(num1, num2)->printList();
-	LinkedListNode<int> *circle = new LinkedListNode<int>(3);
-	circle->add(2);
-	circle->add(1);
-	LinkedListNode<int> *loopStart = circle->add(4);
-	circle->add(5);
-	LinkedListNode<int> *loopEnd = circle->add(6);
+	LinkedListNode<int> *circle = new LinkedListNode<int>(1), *loopStart, *loopEnd;
+	circle->next = new LinkedListNode<int>(2);
+	circle->next->next = new LinkedListNode<int>(3);
+	loopStart = circle->next->next;
+	loopStart->next = new LinkedListNode<int>(4);
+	loopStart->next->next = new LinkedListNode<int>(5);
+	loopStart->next->next->next = new LinkedListNode<int>(6);
+	loopEnd = loopStart->next->next->next;
 	loopEnd->next = loopStart;
 	LinkedListNode<int> *start = findLoopStart(circle);
-	circle->printList();
 	std::cout << start->data << std::endl;
 	return 0;
 }
