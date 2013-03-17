@@ -38,7 +38,7 @@ public:
 		head = node;
 		//update min list
 		if (node->data < min->data) {
-			node->next = min;
+			node->min = min;
 			min = node;
 		}
 		return true;
@@ -52,7 +52,7 @@ public:
 		Node *node = head;
 		head = head->next;
 		if (node == min) {
-			min = min->next;
+			min = min->min;
 		}
 		delete node;
 		return data;
