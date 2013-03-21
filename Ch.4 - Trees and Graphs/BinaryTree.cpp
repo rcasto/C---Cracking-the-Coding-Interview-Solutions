@@ -80,9 +80,9 @@ Node *createMinBST(int *data) {
 /*
 	Chapter 4 - Problem 4
 */
-LinkedListNode **_createLevelLists(Node *tree, LinkedListNode **lists, int level) {
+void _createLevelLists(Node *tree, LinkedListNode **lists, int level) {
 	if (!tree) {
-		return lists;
+		return;
 	}
 	if (lists[level]) {
 		LinkedListNode *node = createLinkedListNode(tree->data);
@@ -93,7 +93,6 @@ LinkedListNode **_createLevelLists(Node *tree, LinkedListNode **lists, int level
 	}
 	_createLevelLists(tree->left, lists, level + 1);
 	_createLevelLists(tree->right, lists, level + 1);
-	return lists;
 }
 
 LinkedListNode **createLevelLists(Node *tree) {
@@ -101,8 +100,9 @@ LinkedListNode **createLevelLists(Node *tree) {
 		return 0;
 	}
 	int depth = height(tree);
-	LinkedListNode **lists = new LinkedListNode *[depth];
-	return _createLevelLists(tree, lists, 0);
+	LinkedListNode **lists = new LinkedListNode *[depth + 1];
+	_createLevelLists(tree, lists, 0);
+	return lists;
 }
 
 /*
@@ -121,6 +121,28 @@ bool isBST(Node *tree) {
 	}
 	return isBST(tree->left) && isBST(tree->right);
 }
+
+/*
+	Chapter 4 - Problem 6
+
+	Find a common ancestor between two nodes
+*/
+Node *findAncestor(Node *tree, Node *A, Node *B) {
+	if (!tree || !A || !B) {
+		return 0;
+	}
+	if (tree == A || tree == B) {
+		return tree;
+	}
+	int data = tree->data;
+	if (A->data >= data && B->data >= data) {
+		return findAncestor(tree->right, A, B);
+	} else if (A->data < data && B->data < data) {
+		return findAncestor(tree->left, A, B);
+	}
+	return tree;
+}
+
 
 void printTree(Node *tree) {
 	if (!tree) {
@@ -159,7 +181,7 @@ int main(int argc, char *argv[]) {
 	std::cout << isBalanced(tree) << std::endl;
 	std::cout << std::endl;
 	//Testing problem 3
-	int data[7] = {1, 3, 5, 6, 7, 8};
+	int data[10] = {1, 3, 5, 6, 7, 8, 10, 12, 14};
 	Node *bst = createMinBST(data);
 	printTree(bst);
 	std::cout << std::endl;
@@ -173,6 +195,13 @@ int main(int argc, char *argv[]) {
 	while (lists[i]) {
 		printLinkedList(lists[i]);
 		i++;
+	}
+	//Testing problem 6
+	Node *leftN = bst->left->left;
+	Node *rightN = bst->left->right;
+	Node *ancestor = findAncestor(bst, leftN, rightN);
+	if (ancestor) {
+		std::cout << ancestor->data << std::endl;
 	}
 	return 0;
 }
