@@ -5,6 +5,18 @@ struct Node {
 	struct Node *left, *right;
 };
 
+struct LinkedListNode {
+	int data;
+	struct LinkedListNode *next;
+};
+
+LinkedListNode *createLinkedListNode(int data) {
+	LinkedListNode *node = new LinkedListNode;
+	node->data = data;
+	node->next = 0;
+	return node;
+}
+
 Node *createNode(int data) {
 	Node *node = new Node;
 	node->data = data;
@@ -38,21 +50,76 @@ bool isBalanced(Node *tree) {
 /*
 	Chapter 4 - Problem 3
 */
-Node *createMinBST(int *data, Node *tree = 0) {
+int length(int *data) {
+	int i = 0;
+	while (*data) {
+		i++;
+		data++;
+	}
+	return i;
+}
+
+Node *_createMinBST(int data[], int start, int end) {
+	if (end - start <= 0) {
+		return 0;
+	}
+	int middle = (start + end) / 2;
+	Node *tree = createNode(data[middle]);
+	tree->left = _createMinBST(data, start, middle);
+	tree->right = _createMinBST(data, middle + 1, end);
+	return tree;
+}
+
+Node *createMinBST(int *data) {
 	if (!*data) {
-		return ;
+		return 0;
 	}
+	return _createMinBST(data, 0, length(data));
+}
+
+/*
+	Chapter 4 - Problem 4
+*/
+LinkedListNode **_createLevelLists(Node *tree, LinkedListNode **lists, int level) {
 	if (!tree) {
-		tree = createNode(*data);
-		return createMinBST(++data, tree);
+		return lists;
 	}
-	if (*data >= tree->data) {
-		tree->right = createNode(*data);
-		return createMinBST(++data, tree->right);
+	if (lists[level]) {
+		LinkedListNode *node = createLinkedListNode(tree->data);
+		node->next = lists[level];
+		lists[level] = node;
 	} else {
-		tree->left = createNode(*data);
-		return createMinBST(++data, tree->left);
+		lists[level] = createLinkedListNode(tree->data);
 	}
+	_createLevelLists(tree->left, lists, level + 1);
+	_createLevelLists(tree->right, lists, level + 1);
+	return lists;
+}
+
+LinkedListNode **createLevelLists(Node *tree) {
+	if (!tree) {
+		return 0;
+	}
+	int depth = height(tree);
+	LinkedListNode **lists = new LinkedListNode *[depth];
+	return _createLevelLists(tree, lists, 0);
+}
+
+/*
+	Chapter 4 - Problem 5
+*/
+bool isBST(Node *tree) {
+	if (!tree) {
+		return true;
+	}
+	int data = tree->data;
+	if (tree->left && tree->left->data >= data) {
+		return false;
+	}
+	if (tree->right && tree->right->data < data) {
+		return false;
+	}
+	return isBST(tree->left) && isBST(tree->right);
 }
 
 void printTree(Node *tree) {
@@ -62,6 +129,21 @@ void printTree(Node *tree) {
 	std::cout << tree->data << std::endl;
 	printTree(tree->left);
 	printTree(tree->right);
+}
+
+void printLinkedList(LinkedListNode *list) {
+	if (!list) {
+		return;
+	}
+	LinkedListNode *node = list;
+	while (node) {
+		std::cout << node->data;
+		if (node->next) {
+			std::cout << " -> ";
+		}
+		node = node->next;
+	}
+	std::cout << std::endl;
 }
 
 /*
@@ -80,5 +162,17 @@ int main(int argc, char *argv[]) {
 	int data[7] = {1, 3, 5, 6, 7, 8};
 	Node *bst = createMinBST(data);
 	printTree(bst);
+	std::cout << std::endl;
+	//Testing problem 5
+	std::cout << isBST(bst) << std::endl;
+	std::cout << isBST(tree) << std::endl;
+	std::cout << std::endl;
+	//Testing problem 4
+	LinkedListNode ** lists = createLevelLists(bst);
+	int i = 0;
+	while (lists[i]) {
+		printLinkedList(lists[i]);
+		i++;
+	}
 	return 0;
 }
