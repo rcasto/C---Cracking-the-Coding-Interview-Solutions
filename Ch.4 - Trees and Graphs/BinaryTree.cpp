@@ -123,7 +123,7 @@ bool isBST(Node *tree) {
 }
 
 /*
-	Chapter 4 - Problem 6
+	Chapter 4 - Problem 7
 
 	Find a common ancestor between two nodes
 */
@@ -141,6 +141,35 @@ Node *findAncestor(Node *tree, Node *A, Node *B) {
 		return findAncestor(tree->left, A, B);
 	}
 	return tree;
+}
+
+/*
+	Chapter 4 - Problem 8
+	
+	Have two large binary trees t1 and t2
+	-create and implement an algorithm to check if t2 is a subtree of t1
+*/
+bool isEqual(Node *t1, Node *t2) {
+	if (!t1 && !t2) {
+		return true;
+	}
+	if (!t1 || !t2) {
+		return false;
+	}
+	if (t1->data != t2->data) {
+		return false;
+	}
+	return isEqual(t1->left, t2->left) && isEqual(t1->right, t2->right);
+}
+
+bool isSubtree(Node *t1, Node *t2) {
+	if (!t1 || !t2) {
+		return false;
+	}
+	if (t1 == t2) {
+		return isEqual(t1, t2);
+	}
+	return isSubtree(t1->left, t2) || isSubtree(t1->right, t2);
 }
 
 
@@ -203,5 +232,10 @@ int main(int argc, char *argv[]) {
 	if (ancestor) {
 		std::cout << ancestor->data << std::endl;
 	}
+	std::cout << std::endl;
+	//Testing problem 8
+	Node *test = bst;
+	test = test->right->left;
+	std::cout << isSubtree(bst, test) << std::endl;
 	return 0;
 }
