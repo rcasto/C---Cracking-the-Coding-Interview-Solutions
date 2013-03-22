@@ -172,16 +172,12 @@ bool isSubtree(Node *t1, Node *t2) {
 	return isSubtree(t1->left, t2) || isSubtree(t1->right, t2);
 }
 
-
-void printTree(Node *tree) {
-	if (!tree) {
-		return;
-	}
-	std::cout << tree->data << std::endl;
-	printTree(tree->left);
-	printTree(tree->right);
-}
-
+/*
+	Chapter 4 - Problem 9
+	
+	Given a binary tree where each node contains a value
+	Design an algorithm to print all paths that sum to a given value
+*/
 void printLinkedList(LinkedListNode *list) {
 	if (!list) {
 		return;
@@ -197,6 +193,38 @@ void printLinkedList(LinkedListNode *list) {
 	std::cout << std::endl;
 }
 
+void printPaths(Node *tree, int sum, LinkedListNode *path = 0) {
+	if (!tree) {
+		return;
+	}
+	if (!path) {
+		path = createLinkedListNode(tree->data);
+	} else {
+		LinkedListNode *node = createLinkedListNode(tree->data);
+		node->next = path;
+		path = node;
+	}
+	int diff = sum - tree->data;
+	if (diff < 0) {
+		return;
+	}
+	if (diff == 0) {
+		printLinkedList(path);
+		return;
+	} 
+	printPaths(tree->left, diff, path);
+	printPaths(tree->right, diff, path);
+}
+
+void printTree(Node *tree) {
+	if (!tree) {
+		return;
+	}
+	std::cout << tree->data << std::endl;
+	printTree(tree->left);
+	printTree(tree->right);
+}
+
 /*
 	Debugging/Testing
 */
@@ -210,7 +238,7 @@ int main(int argc, char *argv[]) {
 	std::cout << isBalanced(tree) << std::endl;
 	std::cout << std::endl;
 	//Testing problem 3
-	int data[10] = {1, 3, 5, 6, 7, 8, 10, 12, 14};
+	int data[7] = {1, 2, 3, 4, 5, 6};
 	Node *bst = createMinBST(data);
 	printTree(bst);
 	std::cout << std::endl;
@@ -237,5 +265,8 @@ int main(int argc, char *argv[]) {
 	Node *test = bst;
 	test = test->right->left;
 	std::cout << isSubtree(bst, test) << std::endl;
+	std::cout << std::endl;
+	//Testing problem 9
+	printPaths(bst, 4);
 	return 0;
 }
