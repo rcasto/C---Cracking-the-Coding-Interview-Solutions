@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 
 struct Node {
 	int data;
@@ -220,10 +221,35 @@ void printTree(Node *tree) {
 	if (!tree) {
 		return;
 	}
-	std::cout << tree->data << std::endl;
 	printTree(tree->left);
+	std::cout << tree->data << std::endl;
 	printTree(tree->right);
 }
+
+/*
+	Iterative Inorder Traversal of Tree
+*/
+void inorder(Node *tree) {
+	if (!tree) {
+		return;
+	}
+	Node *current;
+	std::stack<Node *> stack;
+	stack.push(tree);
+	while (!stack.empty()) {
+		current = stack.top();
+		if (current->left) {
+			stack.push(current->left);
+		} else {
+			std::cout << current->data << std::endl;
+			stack.pop();
+			if (current->right) {
+				stack.push(current->right);
+			}
+		}
+	}
+}
+
 
 /*
 	Debugging/Testing
@@ -268,5 +294,9 @@ int main(int argc, char *argv[]) {
 	std::cout << std::endl;
 	//Testing problem 9
 	printPaths(bst, 4);
+	// Testing Iterative Inorder Traversal
+	std::cout << std::endl;
+	printTree(bst);
+	inorder(bst);
 	return 0;
 }
