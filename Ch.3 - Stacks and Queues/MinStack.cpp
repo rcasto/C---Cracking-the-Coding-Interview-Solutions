@@ -84,13 +84,13 @@ public:
 */
 int main(int argc, char *argv[]) {
 	MinStack stack;
+	stack.push(4);
+	std::cout << "Min: " << stack.minNum() << std::endl;
 	stack.push(3);
 	std::cout << "Min: " << stack.minNum() << std::endl;
 	stack.push(2);
 	std::cout << "Min: " << stack.minNum() << std::endl;
 	stack.push(5);
-	std::cout << "Min: " << stack.minNum() << std::endl;
-	stack.push(4);
 	std::cout << "Min: " << stack.minNum() << std::endl;
 	stack.printStack();
 	stack.pop();
